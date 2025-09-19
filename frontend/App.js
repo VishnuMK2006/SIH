@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NavigationProvider } from './context/NavigationContext';
 import { LanguageProvider } from './context/LanguageContext';
 import SideMenu from './components/SideMenu';
+import SyncService from './services/SyncService';
 
 // Import i18n configuration
 import './i18n/i18n';
@@ -54,6 +55,19 @@ const AppNavigator = () => (
 // Root navigator that decides which flow to show based on auth state
 const RootNavigator = () => {
   const { token, isLoading } = useAuth();
+  
+  // Initialize SyncService when authenticated
+  useEffect(() => {
+    if (token) {
+      // Initialize the sync service
+      SyncService.initialize();
+      
+      // Clean up on unmount
+      return () => {
+        SyncService.cleanup();
+      };
+    }
+  }, [token]);
   
   if (isLoading) {
     // Show a loading screen while checking authentication

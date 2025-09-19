@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   StatusBar,
   Image,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { prescriptions, patientHistory, patientMedicalInfo } from '../data/mockData';
@@ -16,6 +17,7 @@ import { patientInfo } from '../data/patientData';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation as useAppNavigation } from '../context/NavigationContext';
 import { useNetworkConnectivity } from '../hooks/useNetworkConnectivity';
+import { useSync } from '../hooks/useSync';
 import PrescriptionService from '../services/PrescriptionService';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
@@ -122,6 +124,7 @@ const MedicalDashboard = ({ navigation }) => {
   const { openDrawer } = useAppNavigation();
   const { t } = useTranslation();
   const network = useNetworkConnectivity();
+  const sync = useSync();
   
   // State for prescriptions data
   const [userPrescriptions, setUserPrescriptions] = useState(prescriptions);
@@ -228,25 +231,51 @@ const MedicalDashboard = ({ navigation }) => {
       <View style={styles.contentContainer}>
         {/* Network Status Indicator */}
         <View style={styles.networkStatusContainer}>
-          <View style={[styles.networkIndicator, { 
-            backgroundColor: network.isConnected ? 
-              (network.fetchMethod === 'api' ? '#4CAF50' : '#FF9800') : 
-              '#F44336' 
-          }]} />
-          <Text style={styles.networkStatusText}>
-            {network.isConnected ? 
-              (network.fetchMethod === 'api' ? 
-                t('common.onlineMode') : 
-                t('common.limitedMode')) : 
-              t('common.offlineMode')}
-          </Text>
-          <Text style={styles.dataSourceText}>
-            {t('common.dataSource')}: {dataSource === 'api' ? 
-              t('common.server') : 
-              (dataSource === 'sms' ? 
-                t('common.sms') : 
-                t('common.local'))}
-          </Text>
+          <View style={styles.networkStatusRow}>
+            <View style={[styles.networkIndicator, { 
+              backgroundColor: network.isConnected ? 
+                (network.fetchMethod === 'api' ? '#4CAF50' : '#FF9800') : 
+                '#F44336' 
+            }]} />
+            <Text style={styles.networkStatusText}>
+              {network.isConnected ? 
+                (network.fetchMethod === 'api' ? 
+                  t('common.onlineMode') : 
+                  t('common.limitedMode')) : 
+                t('common.offlineMode')}
+            </Text>
+            <Text style={styles.dataSourceText}>
+              {t('common.dataSource')}: {dataSource === 'api' ? 
+                t('common.server') : 
+                (dataSource === 'sms' ? 
+                  t('common.sms') : 
+                  t('common.local'))}
+            </Text>
+          </View>
+          
+          {/* Sync Status and Button */}
+          <View style={styles.syncStatusRow}>
+            <Text style={styles.lastSyncText}>
+              {t('common.lastSync')}: {sync.lastSyncTime ? 
+                new Date(sync.lastSyncTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 
+                t('common.never')}
+            </Text>
+            
+            <TouchableOpacity 
+              style={[
+                styles.syncButton, 
+                sync.isSyncing && styles.syncButtonDisabled
+              ]}
+              onPress={sync.syncNow}
+              disabled={sync.isSyncing || !network.isConnected || network.fetchMethod !== 'api'}
+            >
+              {sync.isSyncing ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.syncButtonText}>{t('common.sync')}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Patient Summary */}
@@ -592,8 +621,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   networkStatusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginHorizontal: 20,
     marginBottom: 15,
     padding: 10,
@@ -604,6 +631,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  networkStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   networkIndicator: {
     width: 10,
@@ -620,6 +651,38 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#8896AB',
     marginLeft: 'auto',
+  },
+  syncStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  lastSyncText: {
+    fontSize: 10,
+    color: '#8896AB',
+  },
+  syncButton: {
+    backgroundColor: '#4B7BEC',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 60,
+    height: 24,
+  },
+  syncButtonDisabled: {
+    backgroundColor: '#A0BEF8',
+  },
+  syncButtonText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
   },
 });
 

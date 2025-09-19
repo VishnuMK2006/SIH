@@ -26,7 +26,11 @@
     "dataSource": "Data",
     "server": "Server",
     "sms": "SMS",
-    "local": "Local"
+    "local": "Local",
+    "sync": "Sync",
+    "syncing": "Syncing...",
+    "lastSync": "Last sync",
+    "never": "Never"
   },
   "languages": {
     "en": "English",
