@@ -138,14 +138,14 @@ export const patientHistory = [
   }
 ];
 
-// Patient info
-export const patientInfo = {
-  name: 'Alex Johnson',
-  age: 42,
+// Patient medical info
+export const patientMedicalInfo = {
+  name: 'John Doe',
+  age: 35,
   gender: 'Male',
   bloodType: 'A+',
   height: '5\'10"',
   weight: '165 lbs',
   allergies: 'Penicillin, Peanuts',
-  emergencyContact: 'Mary Johnson (Wife) - 555-123-4567'
+  emergencyContact: 'Jane Doe (Wife) - 555-123-4567'
 };

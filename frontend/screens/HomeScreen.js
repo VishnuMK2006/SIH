@@ -4,16 +4,22 @@ import {
   Text, 
   StyleSheet, 
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  StatusBar,
+  ScrollView
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation as useAppNavigation } from '../context/NavigationContext';
+import { patientInfo } from '../data/patientData';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
+import LanguageSelector from '../components/LanguageSelector';
 
 const HomeScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
   const { openDrawer } = useAppNavigation();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await logout();
@@ -28,54 +34,84 @@ const HomeScreen = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#4B7BEC" translucent={true} />
         <AppBar 
-          title="Profile" 
+          title={t('profile.profile')}
           showBackButton={true}
           showMenuButton={true}
           onBackPress={goBackToDashboard}
           onMenuPress={openDrawer}
+          rightContent={
+            <View style={styles.headerButtons}>
+              <LanguageSelector />
+            </View>
+          }
         />
       
       <View style={styles.content}>
-        <Text style={styles.welcomeText}>Welcome, {user?.fullName || 'User'}!</Text>
+        <Text style={styles.welcomeText}>{t('profile.welcome')}, {patientInfo.name}!</Text>
         
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Your Profile</Text>
-          
-          <View style={styles.profileItem}>
-            <Text style={styles.profileLabel}>Name:</Text>
-            <Text style={styles.profileValue}>{user?.fullName || 'Not available'}</Text>
-          </View>
-          
-          <View style={styles.profileItem}>
-            <Text style={styles.profileLabel}>Email:</Text>
-            <Text style={styles.profileValue}>{user?.email || 'Not available'}</Text>
-          </View>
-          
-          <View style={styles.profileItem}>
-            <Text style={styles.profileLabel}>Phone:</Text>
-            <Text style={styles.profileValue}>{user?.phoneNumber || 'Not available'}</Text>
-          </View>
-          
-          {user?.lastLogin && (
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('profile.patientProfile')}</Text>
+            
             <View style={styles.profileItem}>
-              <Text style={styles.profileLabel}>Last Login:</Text>
+              <Text style={styles.profileLabel}>{t('profile.patientId')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.patient_id}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.name')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.name}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.gender')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.gender.charAt(0).toUpperCase() + patientInfo.gender.slice(1)}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.age')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.age}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.district')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.district}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.country')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.country}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.email')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.email}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.phone')}:</Text>
+              <Text style={styles.profileValue}>{patientInfo.phoneNumber}</Text>
+            </View>
+            
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.lastLogin')}:</Text>
               <Text style={styles.profileValue}>
-                {new Date(user.lastLogin).toLocaleString()}
+                {new Date(patientInfo.lastLogin).toLocaleString()}
               </Text>
             </View>
-          )}
-        </View>
+          </View>
 
-        <TouchableOpacity 
-          style={styles.dashboardButton}
-          onPress={goBackToDashboard}
-        >
-          <Text style={styles.dashboardButtonText}>Back to Dashboard</Text>
-        </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.dashboardButton}
+            onPress={goBackToDashboard}
+          >
+            <Text style={styles.dashboardButtonText}>{t('dashboard.backToDashboard')}</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>{t('auth.logout')}</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </SafeAreaView>
     </MainLayout>
@@ -90,14 +126,20 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     color: '#333',
+    textAlign: 'center',
   },
   card: {
     backgroundColor: 'white',

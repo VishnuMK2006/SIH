@@ -5,7 +5,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NavigationProvider } from './context/NavigationContext';
+import { LanguageProvider } from './context/LanguageContext';
 import SideMenu from './components/SideMenu';
+
+// Import i18n configuration
+import './i18n/i18n';
 
 // Import screens
 import LoginScreen from './screens/LoginScreen';
@@ -76,9 +80,11 @@ const RootNavigator = () => {
 // Main App component that wraps everything with the AuthProvider
 export default function App() {
   return (
-    <AuthProvider>
-      <StatusBar style="auto" />
-      <RootNavigator />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <RootNavigator />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

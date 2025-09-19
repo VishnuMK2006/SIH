@@ -11,10 +11,13 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import AppBar from '../components/AppBar';
+import LanguageSelector from '../components/LanguageSelector';
 
 const LoginScreen = ({ navigation }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -26,10 +29,10 @@ const LoginScreen = ({ navigation }) => {
   const validateForm = () => {
     let tempErrors = {};
     
-    if (!email) tempErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) tempErrors.email = 'Email is invalid';
+    if (!email) tempErrors.email = t('auth.fillAllFields');
+    else if (!/\S+@\S+\.\S+/.test(email)) tempErrors.email = t('auth.invalidEmail');
     
-    if (!password) tempErrors.password = 'Password is required';
+    if (!password) tempErrors.password = t('auth.fillAllFields');
     
     setErrors(tempErrors);
     
@@ -46,11 +49,11 @@ const LoginScreen = ({ navigation }) => {
       const result = await login(email, password);
       
       if (!result.success) {
-        Alert.alert('Login Failed', result.error);
+        Alert.alert(t('auth.loginError'), result.error);
       }
       
     } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      Alert.alert(t('common.error'), t('auth.loginError'));
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);
@@ -62,18 +65,22 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <AppBar title="Login" />
+      <AppBar title={t('auth.login')} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Login to your account</Text>
+          <Text style={styles.title}>{t('common.appName')}</Text>
+          <Text style={styles.subtitle}>{t('auth.login')}</Text>
+
+          <View style={styles.languageSelectorContainer}>
+            <LanguageSelector />
+          </View>
 
           {/* Email Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email</Text>
+            <Text style={styles.inputLabel}>{t('auth.email')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your email"
+              placeholder={t('auth.email')}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -86,10 +93,10 @@ const LoginScreen = ({ navigation }) => {
 
           {/* Password Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
+            <Text style={styles.inputLabel}>{t('auth.password')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your password"
+              placeholder={t('auth.password')}
               secureTextEntry
               value={password}
               onChangeText={setPassword}
@@ -108,15 +115,15 @@ const LoginScreen = ({ navigation }) => {
             {isLoading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text style={styles.loginButtonText}>Login</Text>
+              <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
             )}
           </TouchableOpacity>
 
           {/* Sign Up Link */}
           <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
+            <Text style={styles.signupText}>{t('auth.noAccount')} </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-              <Text style={styles.signupLink}>Sign Up</Text>
+              <Text style={styles.signupLink}>{t('auth.signup')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -136,6 +143,10 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 20,
+  },
+  languageSelectorContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
   },
   title: {
     fontSize: 28,

@@ -10,14 +10,18 @@ import {
   Image,
   Alert
 } from 'react-native';
-import { prescriptions, patientHistory, patientInfo } from '../data/mockData';
+import { useTranslation } from 'react-i18next';
+import { prescriptions, patientHistory, patientMedicalInfo } from '../data/mockData';
+import { patientInfo } from '../data/patientData';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation as useAppNavigation } from '../context/NavigationContext';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
+import LanguageSelector from '../components/LanguageSelector';
 
 // Optimized component for prescription cards - using memo for performance
 const PrescriptionCard = memo(({ item }) => {
+  const { t } = useTranslation();
   const isToday = item.remainingDays === 0;
   const statusColor = isToday ? '#FF6B6B' : (item.remainingDays === 1 ? '#FFAA2B' : item.color);
   
@@ -27,13 +31,13 @@ const PrescriptionCard = memo(({ item }) => {
         <Text style={styles.medicineName}>{item.medicineName}</Text>
         <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
           <Text style={styles.statusText}>
-            {isToday ? 'Today' : `${item.remainingDays} days`}
+            {isToday ? t('common.today') : `${item.remainingDays} ${t('common.days')}`}
           </Text>
         </View>
       </View>
       <Text style={styles.dosage}>{item.dosage}</Text>
       <Text style={styles.nextDate}>
-        Next: {new Date(item.nextDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+        {t('common.next')}: {new Date(item.nextDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
       </Text>
     </TouchableOpacity>
   );
@@ -41,6 +45,7 @@ const PrescriptionCard = memo(({ item }) => {
 
 // Optimized component for history items - using memo for performance
 const HistoryItem = memo(({ item }) => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   
   return (
@@ -65,25 +70,25 @@ const HistoryItem = memo(({ item }) => {
           
           <View style={styles.vitalsContainer}>
             <View style={styles.vitalItem}>
-              <Text style={styles.vitalLabel}>BP</Text>
+              <Text style={styles.vitalLabel}>{t('dashboard.bp')}</Text>
               <Text style={styles.vitalValue}>{item.vitals.bloodPressure}</Text>
             </View>
             <View style={styles.vitalItem}>
-              <Text style={styles.vitalLabel}>HR</Text>
+              <Text style={styles.vitalLabel}>{t('dashboard.hr')}</Text>
               <Text style={styles.vitalValue}>{item.vitals.heartRate}</Text>
             </View>
             <View style={styles.vitalItem}>
-              <Text style={styles.vitalLabel}>Temp</Text>
+              <Text style={styles.vitalLabel}>{t('dashboard.temp')}</Text>
               <Text style={styles.vitalValue}>{item.vitals.temperature}</Text>
             </View>
           </View>
           
           <View style={styles.diagnosisContainer}>
-            <Text style={styles.diagnosisLabel}>Diagnosis:</Text>
+            <Text style={styles.diagnosisLabel}>{t('dashboard.diagnosis')}:</Text>
             <Text style={styles.diagnosisText}>{item.diagnosis}</Text>
           </View>
           
-          <Text style={styles.notesLabel}>Notes:</Text>
+          <Text style={styles.notesLabel}>{t('dashboard.notes')}:</Text>
           <Text style={styles.notesText}>{item.notes}</Text>
         </View>
       )}
@@ -92,22 +97,29 @@ const HistoryItem = memo(({ item }) => {
 });
 
 // Empty list components for better UX
-const EmptyPrescriptions = () => (
-  <View style={styles.emptyContainer}>
-    <Text style={styles.emptyText}>No upcoming prescriptions</Text>
-  </View>
-);
+const EmptyPrescriptions = () => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>{t('dashboard.noPrescriptions')}</Text>
+    </View>
+  );
+};
 
-const EmptyHistory = () => (
-  <View style={styles.emptyContainer}>
-    <Text style={styles.emptyText}>No medical history available</Text>
-  </View>
-);
+const EmptyHistory = () => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>{t('dashboard.noHistory')}</Text>
+    </View>
+  );
+};
 
 // Main Dashboard Component
 const MedicalDashboard = ({ navigation }) => {
   const { logout } = useAuth();
   const { openDrawer } = useAppNavigation();
+  const { t } = useTranslation();
   
   // Optimized rendering with useCallback
   const renderPrescriptionCard = useCallback(({ item }) => (
@@ -128,15 +140,15 @@ const MedicalDashboard = ({ navigation }) => {
   
   const handleLogout = async () => {
     Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
+      t('auth.logout'),
+      t('auth.logoutConfirmation'),
       [
         {
-          text: "Cancel",
+          text: t('common.cancel'),
           style: "cancel"
         },
         { 
-          text: "Logout", 
+          text: t('auth.logout'), 
           onPress: async () => await logout()
         }
       ]
@@ -150,11 +162,12 @@ const MedicalDashboard = ({ navigation }) => {
         
         {/* App Bar */}
         <AppBar 
-          title="Medical Dashboard" 
+          title={t('dashboard.title')}
           showMenuButton={true}
           onMenuPress={openDrawer}
           rightContent={
           <View style={styles.headerButtons}>
+            <LanguageSelector />
             <TouchableOpacity style={styles.profileButton} onPress={goToProfile}>
               <View style={styles.profileImage}>
                 <Text style={styles.profileInitial}>{patientInfo.name.charAt(0)}</Text>
@@ -169,29 +182,29 @@ const MedicalDashboard = ({ navigation }) => {
         {/* Patient Summary */}
         <View style={styles.patientSummary}>
           <View style={styles.patientDetail}>
-            <Text style={styles.detailLabel}>Age</Text>
-            <Text style={styles.detailValue}>{patientInfo.age}</Text>
+            <Text style={styles.detailLabel}>{t('dashboard.age')}</Text>
+            <Text style={styles.detailValue}>{patientMedicalInfo.age}</Text>
         </View>
         <View style={styles.patientDetail}>
-          <Text style={styles.detailLabel}>Blood</Text>
-          <Text style={styles.detailValue}>{patientInfo.bloodType}</Text>
+          <Text style={styles.detailLabel}>{t('dashboard.blood')}</Text>
+          <Text style={styles.detailValue}>{patientMedicalInfo.bloodType}</Text>
         </View>
         <View style={styles.patientDetail}>
-          <Text style={styles.detailLabel}>Weight</Text>
-          <Text style={styles.detailValue}>{patientInfo.weight}</Text>
+          <Text style={styles.detailLabel}>{t('dashboard.weight')}</Text>
+          <Text style={styles.detailValue}>{patientMedicalInfo.weight}</Text>
         </View>
         <View style={styles.patientDetail}>
-          <Text style={styles.detailLabel}>Height</Text>
-          <Text style={styles.detailValue}>{patientInfo.height}</Text>
+          <Text style={styles.detailLabel}>{t('dashboard.height')}</Text>
+          <Text style={styles.detailValue}>{patientMedicalInfo.height}</Text>
         </View>
       </View>
       
       {/* Prescriptions Section */}
       <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Upcoming Medications</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.upcomingMedications')}</Text>
           <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
           </TouchableOpacity>
         </View>
         
@@ -214,9 +227,9 @@ const MedicalDashboard = ({ navigation }) => {
       {/* Medical History Section */}
       <View style={styles.historySectionContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Medical History</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.medicalHistory')}</Text>
           <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
           </TouchableOpacity>
         </View>
         

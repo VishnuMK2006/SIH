@@ -1,0 +1,62 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Import translations
+import en from '../translations/en.json';
+import ta from '../translations/ta.json';
+import ml from '../translations/ml.json';
+import hi from '../translations/hi.json';
+
+const resources = {
+  en: { translation: en },
+  ta: { translation: ta },
+  ml: { translation: ml },
+  hi: { translation: hi }
+};
+
+const LANGUAGE_DETECTOR = {
+  type: 'languageDetector',
+  async: true,
+  detect: async (callback) => {
+    try {
+      // Get stored language from AsyncStorage
+      const storedLanguage = await AsyncStorage.getItem('user-language');
+      if (storedLanguage) {
+        return callback(storedLanguage);
+      } else {
+        // Default to English if no stored language
+        return callback('en');
+      }
+    } catch (error) {
+      console.error('Error retrieving stored language:', error);
+      callback('en');
+    }
+  },
+  init: () => {},
+  cacheUserLanguage: async (language) => {
+    try {
+      // Store the selected language in AsyncStorage
+      await AsyncStorage.setItem('user-language', language);
+    } catch (error) {
+      console.error('Error storing language:', error);
+    }
+  }
+};
+
+i18n
+  .use(LANGUAGE_DETECTOR)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    compatibilityJSON: 'v3', // Important for Android
+    interpolation: {
+      escapeValue: false
+    },
+    react: {
+      useSuspense: false
+    }
+  });
+
+export default i18n;
