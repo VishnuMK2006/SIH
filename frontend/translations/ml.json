@@ -19,7 +19,14 @@
     "logout": "പുറത്തുകടക്കുക",
     "today": "ഇന്ന്",
     "days": "ദിവസങ്ങൾ",
-    "seeAll": "എല്ലാം കാണുക"
+    "seeAll": "എല്ലാം കാണുക",
+    "onlineMode": "ഓൺലൈൻ",
+    "offlineMode": "ഓഫ്‌ലൈൻ",
+    "limitedMode": "പരിമിത കണക്റ്റിവിറ്റി",
+    "dataSource": "ഡാറ്റ സ്രോതസ്സ്",
+    "server": "സെർവർ",
+    "sms": "SMS",
+    "local": "പ്രാദേശികം"
   },
   "languages": {
     "en": "ഇംഗ്ലീഷ്",

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Platform, SafeAreaView } from 'react-native';
+import LanguageIcon from './LanguageIcon';
 
 /**
  * A reusable app bar component that displays the current screen name and action buttons
@@ -9,6 +10,7 @@ import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Platform, SafeArea
  * @param {function} onMenuPress - Optional function to call when menu button is pressed
  * @param {boolean} showBackButton - Whether to show the back button (default: false)
  * @param {boolean} showMenuButton - Whether to show the menu button (default: false)
+ * @param {boolean} showLanguageIcon - Whether to show the language icon (default: true)
  * @param {React.ReactNode} rightContent - Optional content to display on the right side of the app bar
  * @param {object} style - Additional styles to apply to the app bar container
  */
@@ -18,6 +20,7 @@ const AppBar = ({
   onMenuPress,
   showBackButton = false,
   showMenuButton = false,
+  showLanguageIcon = true,
   rightContent,
   style 
 }) => {
@@ -63,6 +66,7 @@ const AppBar = ({
         </View>
         
         <View style={styles.rightSection}>
+          {showLanguageIcon && <LanguageIcon />}
           {rightContent}
         </View>
       </View>

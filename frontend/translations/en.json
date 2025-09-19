@@ -19,7 +19,14 @@
     "logout": "Logout",
     "today": "Today",
     "days": "days",
-    "seeAll": "See All"
+    "seeAll": "See All",
+    "onlineMode": "Online",
+    "offlineMode": "Offline",
+    "limitedMode": "Limited Connectivity",
+    "dataSource": "Data",
+    "server": "Server",
+    "sms": "SMS",
+    "local": "Local"
   },
   "languages": {
     "en": "English",

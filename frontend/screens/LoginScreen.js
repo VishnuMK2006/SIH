@@ -14,7 +14,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import AppBar from '../components/AppBar';
-import LanguageSelector from '../components/LanguageSelector';
 
 const LoginScreen = ({ navigation }) => {
   const { t } = useTranslation();
@@ -70,10 +69,6 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.formContainer}>
           <Text style={styles.title}>{t('common.appName')}</Text>
           <Text style={styles.subtitle}>{t('auth.login')}</Text>
-
-          <View style={styles.languageSelectorContainer}>
-            <LanguageSelector />
-          </View>
 
           {/* Email Field */}
           <View style={styles.inputContainer}>
@@ -143,10 +138,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 20,
-  },
-  languageSelectorContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
   },
   title: {
     fontSize: 28,

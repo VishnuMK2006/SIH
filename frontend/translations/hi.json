@@ -19,7 +19,14 @@
     "logout": "लॉगआउट",
     "today": "आज",
     "days": "दिन",
-    "seeAll": "सभी देखें"
+    "seeAll": "सभी देखें",
+    "onlineMode": "ऑनलाइन",
+    "offlineMode": "ऑफलाइन",
+    "limitedMode": "सीमित कनेक्टिविटी",
+    "dataSource": "डेटा स्रोत",
+    "server": "सर्वर",
+    "sms": "एसएमएस",
+    "local": "स्थानीय"
   },
   "languages": {
     "en": "अंग्रेज़ी",

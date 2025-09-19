@@ -19,7 +19,14 @@
     "logout": "வெளியேறு",
     "today": "இன்று",
     "days": "நாட்கள்",
-    "seeAll": "அனைத்தையும் காண"
+    "seeAll": "அனைத்தையும் காண",
+    "onlineMode": "ஆன்லைன்",
+    "offlineMode": "ஆஃப்லைன்",
+    "limitedMode": "குறைந்த இணைப்பு",
+    "dataSource": "தரவு மூலம்",
+    "server": "சேவையகம்",
+    "sms": "SMS",
+    "local": "உள்ளூர்"
   },
   "languages": {
     "en": "ஆங்கிலம்",

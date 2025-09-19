@@ -14,7 +14,6 @@ import { useNavigation as useAppNavigation } from '../context/NavigationContext'
 import { patientInfo } from '../data/patientData';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
-import LanguageSelector from '../components/LanguageSelector';
 
 const HomeScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
@@ -39,11 +38,6 @@ const HomeScreen = ({ navigation }) => {
           showMenuButton={true}
           onBackPress={goBackToDashboard}
           onMenuPress={openDrawer}
-          rightContent={
-            <View style={styles.headerButtons}>
-              <LanguageSelector />
-            </View>
-          }
         />
       
       <View style={styles.content}>

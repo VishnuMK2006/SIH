@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,9 +15,10 @@ import { prescriptions, patientHistory, patientMedicalInfo } from '../data/mockD
 import { patientInfo } from '../data/patientData';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation as useAppNavigation } from '../context/NavigationContext';
+import { useNetworkConnectivity } from '../hooks/useNetworkConnectivity';
+import PrescriptionService from '../services/PrescriptionService';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
-import LanguageSelector from '../components/LanguageSelector';
 
 // Optimized component for prescription cards - using memo for performance
 const PrescriptionCard = memo(({ item }) => {
@@ -117,9 +118,56 @@ const EmptyHistory = () => {
 
 // Main Dashboard Component
 const MedicalDashboard = ({ navigation }) => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { openDrawer } = useAppNavigation();
   const { t } = useTranslation();
+  const network = useNetworkConnectivity();
+  
+  // State for prescriptions data
+  const [userPrescriptions, setUserPrescriptions] = useState(prescriptions);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataSource, setDataSource] = useState('mock'); // 'mock', 'api', or 'sms'
+  
+  // Fetch prescriptions based on network connectivity
+  useEffect(() => {
+    const fetchUserPrescriptions = async () => {
+      try {
+        setIsLoading(true);
+        
+        // If we have a real user ID, use it; otherwise use a placeholder
+        const userId = user?.id || 'mock-user-id';
+        
+        if (network.isConnected) {
+          // Fetch prescriptions with automatic method selection based on network quality
+          const result = await PrescriptionService.fetchPrescriptions(userId);
+          
+          if (result && result.data) {
+            // If real data exists, use it
+            if (result.data.prescriptions && result.data.prescriptions.length > 0) {
+              setUserPrescriptions(result.data.prescriptions);
+              setDataSource(result.source);
+            }
+          }
+        } else {
+          console.log('No network connection, using local data');
+          // We're already using mock data as the default
+          setDataSource('offline');
+        }
+      } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+        // Keep using mock data on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchUserPrescriptions();
+    
+    // Refresh when network state changes
+    if (network.isConnected !== undefined) {
+      fetchUserPrescriptions();
+    }
+  }, [network.isConnected, user?.id]);
   
   // Optimized rendering with useCallback
   const renderPrescriptionCard = useCallback(({ item }) => (
@@ -167,7 +215,6 @@ const MedicalDashboard = ({ navigation }) => {
           onMenuPress={openDrawer}
           rightContent={
           <View style={styles.headerButtons}>
-            <LanguageSelector />
             <TouchableOpacity style={styles.profileButton} onPress={goToProfile}>
               <View style={styles.profileImage}>
                 <Text style={styles.profileInitial}>{patientInfo.name.charAt(0)}</Text>
@@ -179,6 +226,29 @@ const MedicalDashboard = ({ navigation }) => {
       
       {/* Main Content */}
       <View style={styles.contentContainer}>
+        {/* Network Status Indicator */}
+        <View style={styles.networkStatusContainer}>
+          <View style={[styles.networkIndicator, { 
+            backgroundColor: network.isConnected ? 
+              (network.fetchMethod === 'api' ? '#4CAF50' : '#FF9800') : 
+              '#F44336' 
+          }]} />
+          <Text style={styles.networkStatusText}>
+            {network.isConnected ? 
+              (network.fetchMethod === 'api' ? 
+                t('common.onlineMode') : 
+                t('common.limitedMode')) : 
+              t('common.offlineMode')}
+          </Text>
+          <Text style={styles.dataSourceText}>
+            {t('common.dataSource')}: {dataSource === 'api' ? 
+              t('common.server') : 
+              (dataSource === 'sms' ? 
+                t('common.sms') : 
+                t('common.local'))}
+          </Text>
+        </View>
+
         {/* Patient Summary */}
         <View style={styles.patientSummary}>
           <View style={styles.patientDetail}>
@@ -520,6 +590,36 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#8896AB',
     fontSize: 14,
+  },
+  networkStatusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  networkIndicator: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  networkStatusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#1A2C55',
+  },
+  dataSourceText: {
+    fontSize: 10,
+    color: '#8896AB',
+    marginLeft: 'auto',
   },
 });
 
