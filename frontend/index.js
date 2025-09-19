@@ -1,3 +1,4 @@
+// Import the dependencies
 import { registerRootComponent } from 'expo';
 
 import App from './App';

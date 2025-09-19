@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NavigationProvider } from './context/NavigationContext';
+import SideMenu from './components/SideMenu';
 
 // Import screens
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import HomeScreen from './screens/HomeScreen';
+import MedicalDashboard from './screens/MedicalDashboard';
 
 // Create stack navigators
 const AuthStack = createStackNavigator();
@@ -28,17 +31,18 @@ const AuthNavigator = () => (
 
 // Main app navigator (after authentication)
 const AppNavigator = () => (
-  <AppStack.Navigator>
+  <AppStack.Navigator
+    screenOptions={{
+      headerShown: false, // Hide default headers for all screens as we're using our custom AppBar
+    }}
+  >
+    <AppStack.Screen 
+      name="MedicalDashboard" 
+      component={MedicalDashboard} 
+    />
     <AppStack.Screen 
       name="Home" 
       component={HomeScreen} 
-      options={{
-        title: 'Migrant App',
-        headerStyle: {
-          backgroundColor: '#4B7BEC',
-        },
-        headerTintColor: '#fff',
-      }}
     />
   </AppStack.Navigator>
 );
@@ -58,7 +62,13 @@ const RootNavigator = () => {
   
   return (
     <NavigationContainer>
-      {token ? <AppNavigator /> : <AuthNavigator />}
+      {token ? (
+        <NavigationProvider>
+          <AppNavigator />
+        </NavigationProvider>
+      ) : (
+        <AuthNavigator />
+      )}
     </NavigationContainer>
   );
 };

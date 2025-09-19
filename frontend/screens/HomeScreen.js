@@ -7,16 +7,34 @@ import {
   SafeAreaView
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useNavigation as useAppNavigation } from '../context/NavigationContext';
+import AppBar from '../components/AppBar';
+import MainLayout from '../components/MainLayout';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
+  const { openDrawer } = useAppNavigation();
 
   const handleLogout = async () => {
     await logout();
   };
 
+  const goBackToDashboard = () => {
+    navigation.goBack();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <MainLayout navigation={navigation}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="#4B7BEC" translucent={true} />
+        <AppBar 
+          title="Profile" 
+          showBackButton={true}
+          showMenuButton={true}
+          onBackPress={goBackToDashboard}
+          onMenuPress={openDrawer}
+        />
+      
       <View style={styles.content}>
         <Text style={styles.welcomeText}>Welcome, {user?.fullName || 'User'}!</Text>
         
@@ -48,11 +66,19 @@ const HomeScreen = () => {
           )}
         </View>
 
+        <TouchableOpacity 
+          style={styles.dashboardButton}
+          onPress={goBackToDashboard}
+        >
+          <Text style={styles.dashboardButtonText}>Back to Dashboard</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+    </MainLayout>
   );
 };
 
@@ -108,11 +134,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  dashboardButton: {
+    backgroundColor: '#4B7BEC',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  dashboardButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   logoutButton: {
     backgroundColor: '#FF6B6B',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
   },
   logoutButtonText: {
     color: 'white',

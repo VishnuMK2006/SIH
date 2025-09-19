@@ -12,6 +12,7 @@ import {
   ScrollView
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import AppBar from '../components/AppBar';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -61,6 +62,7 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      <AppBar title="Login" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.title}>Welcome Back</Text>

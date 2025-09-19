@@ -12,6 +12,7 @@ import {
   ScrollView
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import AppBar from '../components/AppBar';
 
 const SignupScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -113,6 +114,11 @@ const SignupScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      <AppBar 
+        title="Sign Up" 
+        showBackButton={true}
+        onBackPress={() => navigation.navigate('Login')}
+      />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.title}>Create Account</Text>
