@@ -19,6 +19,7 @@ import HomeScreen from './screens/HomeScreen';
 import MedicalDashboard from './screens/MedicalDashboard';
 import AppointmentsScreen from './screens/appointments/AppointmentsScreen';
 import RecordsScreen from './screens/records/RecordsScreen';
+import RulesAndRegulationsScreen from './screens/rules/RulesAndRegulationsScreen';
 
 // Create stack navigators
 const AuthStack = createStackNavigator();
@@ -58,6 +59,10 @@ const AppNavigator = () => (
     <AppStack.Screen 
       name="Records" 
       component={RecordsScreen} 
+    />
+    <AppStack.Screen 
+      name="RulesAndRegulations" 
+      component={RulesAndRegulationsScreen} 
     />
   </AppStack.Navigator>
 );

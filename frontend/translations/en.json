@@ -196,5 +196,17 @@
     "storagePermissionMessage": "We need storage permission to access your medical records",
     "permissionDenied": "Permission Denied",
     "offlineAccess": "Your records are available offline"
+  },
+  "rules": {
+    "title": "Rules & Regulations",
+    "subtitle": "Kerala Migrant Worker Rights & Policies",
+    "description": "Complete guide to your rights, regulations, and resources as a migrant worker in Kerala state.",
+    "rulesTab": "Rules & Rights",
+    "videosTab": "Educational Videos",
+    "speakAll": "Read All",
+    "speechError": "Unable to read text aloud. Please try again.",
+    "educationalVideos": "Educational Videos",
+    "videosDescription": "Watch these official videos to understand your rights and access to services in Kerala.",
+    "noVideosAvailable": "No videos available in your selected language."
   }
 }

@@ -54,13 +54,6 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
         
         <TouchableOpacity 
           style={styles.menuItem}
-        >
-          <Text style={styles.menuIcon}>💊</Text>
-          <Text style={styles.menuText}>Medications</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
           onPress={() => handleMenuItemPress('Appointments')}
         >
           <Text style={styles.menuIcon}>📅</Text>
@@ -73,6 +66,14 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
         >
           <Text style={styles.menuIcon}>📝</Text>
           <Text style={styles.menuText}>Records</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuItemPress('RulesAndRegulations')}
+        >
+          <Text style={styles.menuIcon}>📋</Text>
+          <Text style={styles.menuText}>Rules & Regulations</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
