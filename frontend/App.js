@@ -17,6 +17,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import HomeScreen from './screens/HomeScreen';
 import MedicalDashboard from './screens/MedicalDashboard';
+import AppointmentsScreen from './screens/appointments/AppointmentsScreen';
 
 // Create stack navigators
 const AuthStack = createStackNavigator();
@@ -48,6 +49,10 @@ const AppNavigator = () => (
     <AppStack.Screen 
       name="Home" 
       component={HomeScreen} 
+    />
+    <AppStack.Screen 
+      name="Appointments" 
+      component={AppointmentsScreen} 
     />
   </AppStack.Navigator>
 );

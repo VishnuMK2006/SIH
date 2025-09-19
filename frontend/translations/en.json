@@ -122,6 +122,43 @@
     "rulesRegulations": "Rules & Regulations",
     "settings": "Settings",
     "help": "Help & Support",
-    "about": "About"
+    "about": "About",
+    "appointments": "Appointments"
+  },
+  "appointments": {
+    "title": "Appointments",
+    "nearbyHospitals": "Nearby Hospitals",
+    "yourLocation": "Your Location",
+    "permissionDenied": "Permission Denied",
+    "locationPermissionMessage": "We need location permission to show hospitals near you",
+    "locationError": "Could not get your location",
+    "locationLoading": "Getting your location...",
+    "locationPermissionRequired": "Location permission is required to show nearby hospitals",
+    "book": "Book Appointment",
+    "call": "Call",
+    "bookAppointment": "Book Appointment",
+    "name": "Full Name",
+    "enterName": "Enter your full name",
+    "phone": "Phone Number",
+    "enterPhone": "Enter your phone number",
+    "date": "Preferred Date",
+    "enterDate": "Enter preferred date (e.g., DD/MM/YYYY)",
+    "time": "Preferred Time",
+    "enterTime": "Enter preferred time (e.g., 10:00 AM)",
+    "reason": "Reason for Visit",
+    "enterReason": "Briefly describe your medical concern",
+    "fillAllFields": "Please fill all the fields",
+    "requestSent": "Appointment Request Sent",
+    "processingRequest": "Your request is being processed. We will contact you soon.",
+    "savedOffline": "Your request has been saved and will be sent when internet is available.",
+    "savingError": "Error saving your appointment request",
+    "pendingSync": "{{count}} appointment(s) pending sync",
+    "appointmentStatus": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    }
   }
 }
