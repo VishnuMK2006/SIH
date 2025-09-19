@@ -1,0 +1,211 @@
+{
+  "records": [
+    {
+      "id": "rec001",
+      "patientId": "P12345",
+      "date": "2025-08-15T10:30:00",
+      "doctorName": "Dr. Arun Kumar",
+      "hospitalName": "Government General Hospital",
+      "hospitalId": "h001",
+      "diagnosis": "Acute respiratory infection",
+      "symptoms": ["Fever", "Cough", "Shortness of breath"],
+      "medications": [
+        {
+          "name": "Azithromycin",
+          "dosage": "500mg",
+          "frequency": "Once daily",
+          "duration": "3 days"
+        },
+        {
+          "name": "Paracetamol",
+          "dosage": "650mg",
+          "frequency": "Every 6 hours as needed",
+          "duration": "5 days"
+        }
+      ],
+      "labTests": [
+        {
+          "name": "Complete Blood Count",
+          "date": "2025-08-15",
+          "results": "WBC: 12,000/µL (High), RBC: 4.5 million/µL (Normal), Hemoglobin: 14 g/dL (Normal)"
+        },
+        {
+          "name": "Chest X-ray",
+          "date": "2025-08-15",
+          "results": "Mild infiltrates in lower right lobe, consistent with bronchitis"
+        }
+      ],
+      "vitals": {
+        "temperature": "39.2°C",
+        "bloodPressure": "130/85 mmHg",
+        "heartRate": "92 bpm",
+        "respiratoryRate": "22/min",
+        "oxygenSaturation": "95%"
+      },
+      "notes": "Patient presented with 3-day history of fever and cough. Physical examination revealed crackles in right lower lung field. Advised to increase fluid intake and return if symptoms worsen.",
+      "followUp": "2025-08-22",
+      "recordType": "Outpatient Visit"
+    },
+    {
+      "id": "rec002",
+      "patientId": "P12345",
+      "date": "2025-07-10T14:15:00",
+      "doctorName": "Dr. Priya Singh",
+      "hospitalName": "Government Medical College Hospital",
+      "hospitalId": "h002",
+      "diagnosis": "Migraine with aura",
+      "symptoms": ["Severe headache", "Visual disturbances", "Nausea"],
+      "medications": [
+        {
+          "name": "Sumatriptan",
+          "dosage": "50mg",
+          "frequency": "As needed for migraine attack",
+          "duration": "PRN"
+        },
+        {
+          "name": "Propranolol",
+          "dosage": "40mg",
+          "frequency": "Twice daily",
+          "duration": "30 days"
+        }
+      ],
+      "labTests": [],
+      "vitals": {
+        "temperature": "37.0°C",
+        "bloodPressure": "125/80 mmHg",
+        "heartRate": "75 bpm",
+        "respiratoryRate": "16/min",
+        "oxygenSaturation": "98%"
+      },
+      "notes": "Patient reports experiencing migraines approximately twice monthly, typically preceded by visual aura. Current episode began yesterday and has not responded to OTC medications. Discussed triggers and lifestyle modifications.",
+      "followUp": "2025-08-10",
+      "recordType": "Outpatient Visit"
+    },
+    {
+      "id": "rec003",
+      "patientId": "P12345",
+      "date": "2025-05-22T09:00:00",
+      "doctorName": "Dr. Rajesh Verma",
+      "hospitalName": "AIIMS Delhi",
+      "hospitalId": "h003",
+      "diagnosis": "Type 2 Diabetes Mellitus - routine checkup",
+      "symptoms": ["No acute symptoms", "Reports improved energy levels"],
+      "medications": [
+        {
+          "name": "Metformin",
+          "dosage": "500mg",
+          "frequency": "Twice daily with meals",
+          "duration": "Ongoing"
+        }
+      ],
+      "labTests": [
+        {
+          "name": "HbA1c",
+          "date": "2025-05-21",
+          "results": "7.1% (Improved from previous 8.3%)"
+        },
+        {
+          "name": "Fasting Blood Glucose",
+          "date": "2025-05-21",
+          "results": "142 mg/dL"
+        },
+        {
+          "name": "Lipid Profile",
+          "date": "2025-05-21",
+          "results": "Total Cholesterol: 180 mg/dL, LDL: 110 mg/dL, HDL: 45 mg/dL, Triglycerides: 150 mg/dL"
+        }
+      ],
+      "vitals": {
+        "temperature": "36.8°C",
+        "bloodPressure": "135/82 mmHg",
+        "heartRate": "78 bpm",
+        "respiratoryRate": "14/min",
+        "oxygenSaturation": "97%"
+      },
+      "notes": "Routine follow-up for diabetes management. Patient reports compliance with medication and diet. Has increased physical activity to 30 minutes of walking daily. Lab results show improvement in glycemic control. Continue current management plan.",
+      "followUp": "2025-08-22",
+      "recordType": "Routine Checkup"
+    },
+    {
+      "id": "rec004",
+      "patientId": "P12345",
+      "date": "2025-03-05T18:30:00",
+      "doctorName": "Dr. Meena Patel",
+      "hospitalName": "Rajiv Gandhi Government Hospital",
+      "hospitalId": "h004",
+      "diagnosis": "Acute Gastroenteritis",
+      "symptoms": ["Abdominal pain", "Diarrhea", "Vomiting", "Fever"],
+      "medications": [
+        {
+          "name": "Ondansetron",
+          "dosage": "4mg",
+          "frequency": "Every 8 hours as needed",
+          "duration": "3 days"
+        },
+        {
+          "name": "Oral Rehydration Solution",
+          "dosage": "As directed",
+          "frequency": "After each loose stool",
+          "duration": "Until symptoms resolve"
+        }
+      ],
+      "labTests": [
+        {
+          "name": "Stool Analysis",
+          "date": "2025-03-05",
+          "results": "Leukocytes present. No ova or parasites seen."
+        }
+      ],
+      "vitals": {
+        "temperature": "38.5°C",
+        "bloodPressure": "115/75 mmHg",
+        "heartRate": "95 bpm",
+        "respiratoryRate": "18/min",
+        "oxygenSaturation": "98%"
+      },
+      "notes": "Patient presented to emergency department with 24-hour history of vomiting and diarrhea. Mild dehydration noted. IV fluids administered in ED. Discharged with oral rehydration and anti-emetics. Counseled regarding signs of worsening dehydration that would warrant return to hospital.",
+      "followUp": "PRN",
+      "recordType": "Emergency Visit"
+    },
+    {
+      "id": "rec005",
+      "patientId": "P12345",
+      "date": "2025-01-12T11:00:00",
+      "doctorName": "Dr. Suresh Menon",
+      "hospitalName": "Government Medical College Kozhikode",
+      "hospitalId": "h005",
+      "diagnosis": "Essential Hypertension - annual review",
+      "symptoms": ["Occasional headaches", "No other complaints"],
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dosage": "5mg",
+          "frequency": "Once daily",
+          "duration": "Ongoing"
+        }
+      ],
+      "labTests": [
+        {
+          "name": "Comprehensive Metabolic Panel",
+          "date": "2025-01-10",
+          "results": "All values within normal range. Creatinine: 0.9 mg/dL, BUN: 15 mg/dL"
+        },
+        {
+          "name": "Urinalysis",
+          "date": "2025-01-10",
+          "results": "Normal, no protein or blood detected"
+        }
+      ],
+      "vitals": {
+        "temperature": "36.9°C",
+        "bloodPressure": "142/88 mmHg",
+        "heartRate": "72 bpm",
+        "respiratoryRate": "16/min",
+        "oxygenSaturation": "98%"
+      },
+      "notes": "Annual review for hypertension management. Blood pressure remains slightly elevated despite medication. Patient admits to inconsistent medication adherence and high salt intake. Discussed importance of medication compliance and lifestyle modifications. Consider increasing dose if BP remains elevated at next visit.",
+      "followUp": "2025-07-12",
+      "recordType": "Routine Checkup"
+    }
+  ]
+}

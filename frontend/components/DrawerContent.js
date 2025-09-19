@@ -69,6 +69,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
         
         <TouchableOpacity 
           style={styles.menuItem}
+          onPress={() => handleMenuItemPress('Records')}
         >
           <Text style={styles.menuIcon}>📝</Text>
           <Text style={styles.menuText}>Records</Text>
