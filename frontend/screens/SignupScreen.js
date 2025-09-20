@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import AppBar from '../components/AppBar';
+import { useTranslation } from 'react-i18next';
 
 const SignupScreen = ({ navigation }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -49,35 +51,35 @@ const SignupScreen = ({ navigation }) => {
     
     // Full Name validation
     if (!formData.fullName) {
-      tempErrors.fullName = 'Full name is required';
+      tempErrors.fullName = t('auth.nameRequired');
     } else if (formData.fullName.length < 2 || formData.fullName.length > 50) {
-      tempErrors.fullName = 'Full name must be between 2 and 50 characters';
+      tempErrors.fullName = t('auth.nameLength');
     }
     
     // Email validation
     if (!formData.email) {
-      tempErrors.email = 'Email is required';
+      tempErrors.email = t('auth.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      tempErrors.email = 'Email is invalid';
+      tempErrors.email = t('auth.invalidEmail');
     }
     
     // Phone number validation
     if (!formData.phoneNumber) {
-      tempErrors.phoneNumber = 'Phone number is required';
+      tempErrors.phoneNumber = t('auth.phoneRequired');
     } else if (!/^\d{10,15}$/.test(formData.phoneNumber.replace(/[^0-9]/g, ''))) {
-      tempErrors.phoneNumber = 'Phone number is invalid';
+      tempErrors.phoneNumber = t('auth.invalidPhone');
     }
     
     // Password validation
     if (!formData.password) {
-      tempErrors.password = 'Password is required';
+      tempErrors.password = t('auth.passwordRequired');
     } else if (formData.password.length < 6) {
-      tempErrors.password = 'Password must be at least 6 characters';
+      tempErrors.password = t('auth.passwordLength');
     }
     
     // Confirm password validation
     if (formData.password !== formData.confirmPassword) {
-      tempErrors.confirmPassword = 'Passwords do not match';
+      tempErrors.confirmPassword = t('auth.passwordMismatch');
     }
     
     setErrors(tempErrors);
@@ -98,11 +100,11 @@ const SignupScreen = ({ navigation }) => {
       const result = await signup(userData);
       
       if (!result.success) {
-        Alert.alert('Signup Failed', result.error);
+        Alert.alert(t('auth.signupError'), result.error);
       }
       
     } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      Alert.alert(t('common.error'), t('auth.unexpectedError'));
       console.error('Signup error:', error);
     } finally {
       setIsLoading(false);
@@ -115,21 +117,21 @@ const SignupScreen = ({ navigation }) => {
       style={styles.container}
     >
       <AppBar 
-        title="Sign Up" 
+        title={t('auth.signUp')} 
         showBackButton={true}
         onBackPress={() => navigation.navigate('Login')}
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up to get started</Text>
+          <Text style={styles.title}>{t('auth.createAccount')}</Text>
+          <Text style={styles.subtitle}>{t('auth.getStarted')}</Text>
 
           {/* Full Name Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Full Name</Text>
+            <Text style={styles.inputLabel}>{t('auth.fullName')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your full name"
+              placeholder={t('auth.enterFullName')}
               value={formData.fullName}
               onChangeText={(value) => handleChange('fullName', value)}
             />
@@ -140,10 +142,10 @@ const SignupScreen = ({ navigation }) => {
 
           {/* Email Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email</Text>
+            <Text style={styles.inputLabel}>{t('auth.email')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your email"
+              placeholder={t('auth.enterEmail')}
               value={formData.email}
               onChangeText={(value) => handleChange('email', value)}
               keyboardType="email-address"
@@ -156,10 +158,10 @@ const SignupScreen = ({ navigation }) => {
 
           {/* Phone Number Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Phone Number</Text>
+            <Text style={styles.inputLabel}>{t('auth.phoneNumber')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your phone number"
+              placeholder={t('auth.enterPhone')}
               value={formData.phoneNumber}
               onChangeText={(value) => handleChange('phoneNumber', value)}
               keyboardType="phone-pad"
@@ -171,10 +173,10 @@ const SignupScreen = ({ navigation }) => {
 
           {/* Password Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
+            <Text style={styles.inputLabel}>{t('auth.password')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Create a password"
+              placeholder={t('auth.createPassword')}
               secureTextEntry
               value={formData.password}
               onChangeText={(value) => handleChange('password', value)}
@@ -186,10 +188,10 @@ const SignupScreen = ({ navigation }) => {
 
           {/* Confirm Password Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <Text style={styles.inputLabel}>{t('auth.confirmPassword')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Confirm your password"
+              placeholder={t('auth.confirmYourPassword')}
               secureTextEntry
               value={formData.confirmPassword}
               onChangeText={(value) => handleChange('confirmPassword', value)}
@@ -208,15 +210,15 @@ const SignupScreen = ({ navigation }) => {
             {isLoading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text style={styles.signupButtonText}>Sign Up</Text>
+              <Text style={styles.signupButtonText}>{t('auth.signUp')}</Text>
             )}
           </TouchableOpacity>
 
           {/* Login Link */}
           <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
+            <Text style={styles.loginText}>{t('auth.alreadyHaveAccount')} </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.loginLink}>Login</Text>
+              <Text style={styles.loginLink}>{t('auth.login')}</Text>
             </TouchableOpacity>
           </View>
         </View>

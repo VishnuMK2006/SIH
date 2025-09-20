@@ -1,8 +1,5 @@
-// API configuration for the Migrant application
-
-// Base URL - update this to match your backend server URL
 // const BASE_URL = 'http://10.1.32.36:5000/api';
-const BASE_URL = 'http://10.251.236.143:5000/api';
+const BASE_URL = 'http://10.1.84.43:5000/api';
 
 // API endpoints
 export const API_ENDPOINTS = {

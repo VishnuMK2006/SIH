@@ -49,23 +49,118 @@ const RulesAndRegulationsScreen = ({ navigation }) => {
         'en': 'en-US',
         'ta': 'ta-IN',
         'ml': 'ml-IN',
-        'hi': 'hi-IN'
+        'hi': 'hi-IN' // Try different Hindi variants if needed
       };
       
+      // Fallback language logic
+      let languageToUse = speechLanguages[currentLanguage] || 'en-US';
+      
+      // For Hindi specifically, try alternatives if available
+      if (currentLanguage === 'hi') {
+        try {
+          // Check available voices to see if Hindi is supported
+          const availableVoices = await Speech.getAvailableVoicesAsync();
+          console.log('Available voices:', availableVoices);
+          
+          // Look for Hindi voices
+          const hindiVoices = availableVoices.filter(voice => 
+            voice.language.startsWith('hi') || 
+            voice.language.includes('Hindi') ||
+            voice.language.includes('hindi')
+          );
+          
+          if (hindiVoices.length > 0) {
+            // Use the first available Hindi voice
+            languageToUse = hindiVoices[0].language;
+            console.log('Using Hindi voice:', languageToUse);
+          } else {
+            console.log('No Hindi voices found, using default:', languageToUse);
+          }
+        } catch (error) {
+          console.error('Error getting available voices:', error);
+        }
+      }
+      
       const options = {
-        language: speechLanguages[currentLanguage] || 'en-US',
+        language: languageToUse,
         pitch: 1.0,
         rate: 0.8,
         onDone: () => setIsSpeaking(false),
         onStopped: () => setIsSpeaking(false),
-        onError: () => setIsSpeaking(false)
+        onError: (error) => {
+          console.error('Speech synthesis error:', error);
+          setIsSpeaking(false);
+          // If Hindi fails, try falling back to English
+          if (currentLanguage === 'hi' && languageToUse !== 'en-US') {
+            Alert.alert(
+              t('common.warning'),
+              t('rules.hindiSpeechNotAvailable'),
+              [
+                {
+                  text: t('common.cancel'),
+                  style: "cancel"
+                },
+                { 
+                  text: t('rules.speakInEnglish'),
+                  onPress: () => {
+                    const englishOptions = {
+                      language: 'en-US',
+                      pitch: 1.0,
+                      rate: 0.8,
+                      onDone: () => setIsSpeaking(false),
+                      onStopped: () => setIsSpeaking(false),
+                      onError: () => setIsSpeaking(false)
+                    };
+                    setIsSpeaking(true);
+                    Speech.speak(text, englishOptions);
+                  }
+                }
+              ]
+            );
+          } else {
+            Alert.alert(t('common.error'), t('rules.speechError'));
+          }
+        }
       };
       
       await Speech.speak(text, options);
     } catch (error) {
       console.error('Speech error:', error);
       setIsSpeaking(false);
-      Alert.alert(t('common.error'), t('rules.speechError'));
+      
+      // If Hindi specifically failed, offer English as an alternative
+      if (currentLanguage === 'hi') {
+        Alert.alert(
+          t('common.warning'),
+          t('rules.hindiSpeechNotAvailable'),
+          [
+            {
+              text: t('common.cancel'),
+              style: "cancel"
+            },
+            { 
+              text: t('rules.speakInEnglish'),
+              onPress: () => {
+                const englishOptions = {
+                  language: 'en-US',
+                  pitch: 1.0,
+                  rate: 0.8,
+                  onDone: () => setIsSpeaking(false),
+                  onStopped: () => setIsSpeaking(false),
+                  onError: () => {
+                    setIsSpeaking(false);
+                    Alert.alert(t('common.error'), t('rules.speechError'));
+                  }
+                };
+                setIsSpeaking(true);
+                Speech.speak(text, englishOptions);
+              }
+            }
+          ]
+        );
+      } else {
+        Alert.alert(t('common.error'), t('rules.speechError'));
+      }
     }
   };
   

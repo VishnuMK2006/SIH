@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Side Drawer Menu Component
@@ -10,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
  */
 const DrawerContent = ({ navigation, closeDrawer }) => {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   
   // Handle menu item press
   const handleMenuItemPress = (screenName) => {
@@ -41,7 +43,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={() => handleMenuItemPress('MedicalDashboard')}
         >
           <Text style={styles.menuIcon}>📊</Text>
-          <Text style={styles.menuText}>Dashboard</Text>
+          <Text style={styles.menuText}>{t('menu.dashboard')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -49,7 +51,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={() => handleMenuItemPress('Home')}
         >
           <Text style={styles.menuIcon}>👤</Text>
-          <Text style={styles.menuText}>Profile</Text>
+          <Text style={styles.menuText}>{t('menu.profile')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -57,7 +59,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={() => handleMenuItemPress('Appointments')}
         >
           <Text style={styles.menuIcon}>📅</Text>
-          <Text style={styles.menuText}>Appointments</Text>
+          <Text style={styles.menuText}>{t('menu.appointments')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -65,7 +67,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={() => handleMenuItemPress('Records')}
         >
           <Text style={styles.menuIcon}>📝</Text>
-          <Text style={styles.menuText}>Records</Text>
+          <Text style={styles.menuText}>{t('menu.history')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -73,21 +75,21 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={() => handleMenuItemPress('RulesAndRegulations')}
         >
           <Text style={styles.menuIcon}>📋</Text>
-          <Text style={styles.menuText}>Rules & Regulations</Text>
+          <Text style={styles.menuText}>{t('menu.rulesRegulations')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.menuItem}
         >
           <Text style={styles.menuIcon}>🔔</Text>
-          <Text style={styles.menuText}>Notifications</Text>
+          <Text style={styles.menuText}>{t('common.notifications')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.menuItem}
         >
           <Text style={styles.menuIcon}>⚙️</Text>
-          <Text style={styles.menuText}>Settings</Text>
+          <Text style={styles.menuText}>{t('common.settings')}</Text>
         </TouchableOpacity>
         
         {/* Divider */}
@@ -99,12 +101,12 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           onPress={handleLogout}
         >
           <Text style={styles.menuIcon}>🚪</Text>
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>{t('auth.logout')}</Text>
         </TouchableOpacity>
       </ScrollView>
       
       <View style={styles.footer}>
-        <Text style={styles.footerText}>App Version 1.0.0</Text>
+        <Text style={styles.footerText}>{t('common.version')} 1.0.0</Text>
       </View>
     </View>
   );

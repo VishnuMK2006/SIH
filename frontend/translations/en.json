@@ -30,7 +30,9 @@
     "sync": "Sync",
     "syncing": "Syncing...",
     "lastSync": "Last sync",
-    "never": "Never"
+    "never": "Never",
+    "notifications": "Notifications",
+    "version": "App Version"
   },
   "languages": {
     "en": "English",
@@ -40,13 +42,13 @@
   },
   "auth": {
     "login": "Login",
-    "signup": "Sign Up",
+    "signUp": "Sign Up",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot Password?",
     "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
+    "alreadyHaveAccount": "Already have an account?",
     "createAccount": "Create Account",
     "resetPassword": "Reset Password",
     "loginSuccess": "Login successful",
@@ -57,7 +59,23 @@
     "fillAllFields": "Please fill in all fields",
     "invalidEmail": "Email is invalid",
     "logout": "Logout",
-    "logoutConfirmation": "Are you sure you want to logout?"
+    "logoutConfirmation": "Are you sure you want to logout?",
+    "getStarted": "Sign up to get started",
+    "fullName": "Full Name",
+    "enterFullName": "Enter your full name",
+    "enterEmail": "Enter your email",
+    "phoneNumber": "Phone Number",
+    "enterPhone": "Enter your phone number",
+    "createPassword": "Create a password",
+    "confirmYourPassword": "Confirm your password",
+    "nameRequired": "Name is required",
+    "nameLength": "Name must be between 2 and 50 characters",
+    "emailRequired": "Email is required",
+    "phoneRequired": "Phone number is required",
+    "invalidPhone": "Invalid phone number",
+    "passwordRequired": "Password is required",
+    "passwordLength": "Password must be at least 6 characters",
+    "unexpectedError": "An unexpected error occurred. Please try again."
   },
   "profile": {
     "profile": "Profile",
@@ -205,6 +223,8 @@
     "videosTab": "Educational Videos",
     "speakAll": "Read All",
     "speechError": "Unable to read text aloud. Please try again.",
+    "hindiSpeechNotAvailable": "Hindi speech synthesis is currently not available.",
+    "speakInEnglish": "Listen in English",
     "educationalVideos": "Educational Videos",
     "videosDescription": "Watch these official videos to understand your rights and access to services in Kerala.",
     "noVideosAvailable": "No videos available in your selected language."

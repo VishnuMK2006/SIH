@@ -30,7 +30,9 @@
     "sync": "सिंक",
     "syncing": "सिंक हो रहा है...",
     "lastSync": "अंतिम सिंक",
-    "never": "कभी नहीं"
+    "never": "कभी नहीं",
+    "notifications": "सूचनाएं",
+    "version": "ऐप संस्करण"
   },
   "languages": {
     "en": "अंग्रेज़ी",
@@ -40,13 +42,13 @@
   },
   "auth": {
     "login": "लॉगिन",
-    "signup": "साइन अप",
+    "signUp": "साइन अप",
     "email": "ईमेल",
     "password": "पासवर्ड",
     "confirmPassword": "पासवर्ड की पुष्टि करें",
     "forgotPassword": "पासवर्ड भूल गए?",
     "noAccount": "खाता नहीं है?",
-    "haveAccount": "पहले से ही एक खाता है?",
+    "alreadyHaveAccount": "पहले से ही एक खाता है?",
     "createAccount": "खाता बनाएं",
     "resetPassword": "पासवर्ड रीसेट करें",
     "loginSuccess": "लॉगिन सफल",
@@ -55,8 +57,25 @@
     "signupError": "पंजीकरण विफल। कृपया पुनः प्रयास करें।",
     "passwordMismatch": "पासवर्ड मेल नहीं खाते",
     "fillAllFields": "कृपया सभी क्षेत्रों को भरें",
+    "invalidEmail": "ईमेल अमान्य है",
     "logout": "लॉगआउट",
-    "logoutConfirmation": "क्या आप वाकई लॉगआउट करना चाहते हैं?"
+    "logoutConfirmation": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
+    "getStarted": "आरंभ करने के लिए साइन अप करें",
+    "fullName": "पूरा नाम",
+    "enterFullName": "अपना पूरा नाम दर्ज करें",
+    "enterEmail": "अपना ईमेल दर्ज करें",
+    "phoneNumber": "फोन नंबर",
+    "enterPhone": "अपना फोन नंबर दर्ज करें",
+    "createPassword": "पासवर्ड बनाएं",
+    "confirmYourPassword": "अपने पासवर्ड की पुष्टि करें",
+    "nameRequired": "नाम आवश्यक है",
+    "nameLength": "नाम 2 से 50 अक्षरों के बीच होना चाहिए",
+    "emailRequired": "ईमेल आवश्यक है",
+    "phoneRequired": "फोन नंबर आवश्यक है",
+    "invalidPhone": "अमान्य फोन नंबर",
+    "passwordRequired": "पासवर्ड आवश्यक है",
+    "passwordLength": "पासवर्ड कम से कम 6 अक्षर होना चाहिए",
+    "unexpectedError": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें।"
   },
   "profile": {
     "profile": "प्रोफ़ाइल",
@@ -168,6 +187,8 @@
     "videosTab": "शैक्षणिक वीडियो",
     "speakAll": "सब पढ़ें",
     "speechError": "पाठ को जोर से पढ़ने में असमर्थ। कृपया पुनः प्रयास करें।",
+    "hindiSpeechNotAvailable": "हिंदी भाषा में वाणी संश्लेषण वर्तमान में उपलब्ध नहीं है।",
+    "speakInEnglish": "अंग्रेजी में सुनें",
     "educationalVideos": "शैक्षणिक वीडियो",
     "videosDescription": "केरल में अपने अधिकारों और सेवाओं तक पहुंच को समझने के लिए इन आधिकारिक वीडियो देखें।",
     "noVideosAvailable": "आपकी चयनित भाषा में कोई वीडियो उपलब्ध नहीं है।"
