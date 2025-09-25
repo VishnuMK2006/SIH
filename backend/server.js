@@ -1,89 +1,62 @@
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-require('dotenv').config();
 
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({
-  origin: ['http://localhost:8081', 'http://localhost:19006', 'http://192.168.1.100:8081'],
-  credentials: true
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Session configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'migrant-app-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/migrant-app'
-  }),
-  cookie: {
-    secure: false, // Set to true in production with HTTPS
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/migrant-app', {
+// MongoDB connection
+mongoose.connect('mongodb+srv://generalkey:generalkey@migrant-disease-data.oux7bf7.mongodb.net/kerala_health_system?retryWrites=true&w=majority&appName=Migrant-Disease-Data', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log('Connected to MongoDB'))
-.catch((err) => console.error('MongoDB connection error:', err));
+.catch((error) => console.error('MongoDB connection error:', error));
+
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'migrant-app-super-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: 'mongodb+srv://generalkey:generalkey@migrant-disease-data.oux7bf7.mongodb.net/?retryWrites=true&w=majority&appName=Migrant-Disease-Data'
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+  }
+}));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/hospitals', require('./routes/hospital'));
 
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Migrant App Backend is running',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Root route
+// Basic route
 app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Migrant App API Server',
-    status: 'running',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth/*',
-      user: '/api/user/*'
-    }
-  });
+  res.json({ message: 'Migrant Health API Server' });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    success: false, 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
-  });
+  res.status(500).json({ success: false, message: 'Something went wrong!' });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🔐 Auth endpoints: http://localhost:${PORT}/api/auth`);
-  console.log(`👤 User endpoints: http://localhost:${PORT}/api/user`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;

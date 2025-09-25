@@ -20,6 +20,7 @@ import MedicalDashboard from './screens/MedicalDashboard';
 import AppointmentsScreen from './screens/appointments/AppointmentsScreen';
 import RecordsScreen from './screens/records/RecordsScreen';
 import RulesAndRegulationsScreen from './screens/rules/RulesAndRegulationsScreen';
+import HospitalSelectionScreen from './screens/hospitals/HospitalSelectionScreen';
 
 // Create stack navigators
 const AuthStack = createStackNavigator();
@@ -63,6 +64,10 @@ const AppNavigator = () => (
     <AppStack.Screen 
       name="RulesAndRegulations" 
       component={RulesAndRegulationsScreen} 
+    />
+    <AppStack.Screen 
+      name="HospitalSelection" 
+      component={HospitalSelectionScreen} 
     />
   </AppStack.Navigator>
 );

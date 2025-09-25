@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import * as Location from 'expo-location';
 import AppBar from '../../components/AppBar';
 import { useNetworkConnectivity } from '../../hooks/useNetworkConnectivity';
-import hospitals from '../../data/hospitals/hospitals.json';
+import HospitalService from '../../services/HospitalService';
 
 // Get screen dimensions
 const { width, height } = Dimensions.get('window');
@@ -46,6 +46,58 @@ const AppointmentsScreen = ({ navigation }) => {
   });
   const [appointments, setAppointments] = useState([]);
   const [pendingAppointments, setPendingAppointments] = useState([]);
+  const [allHospitals, setAllHospitals] = useState([]); // Store all hospitals from API
+  const [loadingHospitals, setLoadingHospitals] = useState(false);
+
+  // Function to load hospitals from API
+  const loadHospitalsFromAPI = async () => {
+    try {
+      setLoadingHospitals(true);
+      console.log('Loading hospitals from API...');
+      
+      const result = await HospitalService.getAllHospitals({
+        limit: 100, // Get more hospitals for better map coverage
+        sortBy: 'name',
+        sortOrder: 'asc'
+      });
+
+      if (result.success && result.data && result.data.hospitals) {
+        console.log('Hospitals loaded successfully:', result.data.hospitals.length);
+        const hospitalsWithCoordinates = result.data.hospitals.filter(hospital => 
+          hospital && 
+          hospital.coordinates && 
+          hospital.coordinates.lat && 
+          hospital.coordinates.lon &&
+          hospital.hospital_id
+        );
+        
+        console.log('Hospitals with coordinates:', hospitalsWithCoordinates.length);
+        setAllHospitals(hospitalsWithCoordinates);
+        
+        // If we have user location, calculate distances
+        if (userLocation) {
+          calculateDistancesFromAPI(userLocation.latitude, userLocation.longitude, hospitalsWithCoordinates);
+        } else {
+          // Just set the hospitals without distance calculation
+          setHospitalList(hospitalsWithCoordinates);
+        }
+      } else {
+        console.error('Failed to load hospitals:', result.error || 'Invalid response structure');
+        Alert.alert(
+          t('common.error'),
+          result.error || t('appointments.errorLoadingHospitals')
+        );
+      }
+    } catch (error) {
+      console.error('Error loading hospitals:', error);
+      Alert.alert(
+        t('common.error'),
+        t('appointments.errorLoadingHospitals')
+      );
+    } finally {
+      setLoadingHospitals(false);
+    }
+  };
 
   // Function to get user's current location
   const getCurrentLocation = async () => {
@@ -76,7 +128,7 @@ const AppointmentsScreen = ({ navigation }) => {
       setUserLocation({ latitude, longitude });
       
       // Calculate distance and sort hospitals
-      calculateDistances(latitude, longitude);
+      calculateDistancesFromAPI(latitude, longitude, allHospitals);
       
       setIsLoading(false);
     } catch (error) {
@@ -105,16 +157,24 @@ const AppointmentsScreen = ({ navigation }) => {
     return distance;
   };
 
-  // Calculate distances to all hospitals and sort by distance
-  const calculateDistances = (latitude, longitude) => {
+  // Calculate distances to all hospitals and sort by distance (for API data)
+  const calculateDistancesFromAPI = (latitude, longitude, hospitalsData = null) => {
     if (!latitude || !longitude) return;
     
-    const hospitalsWithDistance = hospitals.hospitals.map(hospital => {
+    const hospitalData = hospitalsData || allHospitals;
+    if (!hospitalData || hospitalData.length === 0) return;
+    
+    const hospitalsWithDistance = hospitalData.map(hospital => {
+      if (!hospital || !hospital.coordinates) {
+        console.warn('Hospital missing coordinates:', hospital);
+        return null;
+      }
+      
       const distance = calculateDistance(
         latitude,
         longitude,
-        hospital.latitude,
-        hospital.longitude
+        hospital.coordinates.lat,
+        hospital.coordinates.lon
       );
       
       return {
@@ -122,13 +182,31 @@ const AppointmentsScreen = ({ navigation }) => {
         distance: distance,
         distanceText: distance < 1 ? 
           `${Math.round(distance * 1000)} m` : 
-          `${distance.toFixed(1)} km`
+          `${distance.toFixed(1)} km`,
+        // Map API data fields to expected format
+        latitude: hospital.coordinates.lat,
+        longitude: hospital.coordinates.lon,
+        id: hospital.hospital_id,
+        address: `${hospital.district || 'Unknown District'}`, // Use district as address fallback
+        phone: 'Contact hospital', // API doesn't have phone in current model
+        specialties: hospital.type ? [hospital.type] : ['General'], // Use hospital type as specialty with fallback
+        operatingHours: 'Contact for hours',
+        hasEmergency: true, // Assume all hospitals have emergency
+        bedCount: hospital.bed_capacity || 0,
+        image: 'hospital_default.jpg'
       };
     });
     
-    // Sort by distance
-    const sortedHospitals = hospitalsWithDistance.sort((a, b) => a.distance - b.distance);
+    // Filter out null values and sort by distance
+    const validHospitals = hospitalsWithDistance.filter(hospital => hospital !== null);
+    const sortedHospitals = validHospitals.sort((a, b) => a.distance - b.distance);
     setHospitalList(sortedHospitals);
+  };
+
+  // Calculate distances to all hospitals and sort by distance (legacy function for static data - now unused)
+  const calculateDistances = (latitude, longitude) => {
+    console.log('calculateDistances called but no static data available');
+    // This function is kept for compatibility but static data is no longer used
   };
 
   // Handle selecting a hospital
@@ -146,7 +224,27 @@ const AppointmentsScreen = ({ navigation }) => {
 
   // Handle call hospital
   const callHospital = (phone) => {
-    Linking.openURL(`tel:${phone}`);
+    // Use default number if phone is not available or is placeholder text
+    const defaultNumber = '1234567890';
+    let phoneNumber = phone;
+    
+    if (!phone || 
+        phone.trim() === '' || 
+        phone === 'Contact hospital' || 
+        phone === 'N/A' || 
+        phone.length < 10) {
+      phoneNumber = defaultNumber;
+      Alert.alert(
+        t('common.info'),
+        `${t('appointments.noPhoneAvailable')}\n${t('appointments.usingDefaultNumber')}: ${defaultNumber}`,
+        [
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('appointments.call'), onPress: () => Linking.openURL(`tel:${defaultNumber}`) }
+        ]
+      );
+    } else {
+      Linking.openURL(`tel:${phoneNumber}`);
+    }
   };
 
   // Handle booking appointment
@@ -283,6 +381,9 @@ const AppointmentsScreen = ({ navigation }) => {
 
   // Initialize when component mounts
   useEffect(() => {
+    // Load hospitals from API first
+    loadHospitalsFromAPI();
+    // Then get current location
     getCurrentLocation();
     loadAppointments();
   }, []);
@@ -400,7 +501,7 @@ const AppointmentsScreen = ({ navigation }) => {
         <Text style={styles.hospitalAddress}>{item.address}</Text>
         <View style={styles.hospitalDetails}>
           <Text style={styles.distanceText}>
-            {item.distanceText} • {item.specialties.slice(0, 2).join(', ')}
+            {item.distanceText} • {(item.specialties || []).slice(0, 2).join(', ')}
           </Text>
           <Text style={styles.operatingHours}>{item.operatingHours}</Text>
         </View>
@@ -417,15 +518,17 @@ const AppointmentsScreen = ({ navigation }) => {
       />
       
       {/* Loading indicator */}
-      {isLoading && (
+      {(isLoading || loadingHospitals) && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#4B7BEC" />
-          <Text style={styles.loadingText}>{t('common.loading')}</Text>
+          <Text style={styles.loadingText}>
+            {loadingHospitals ? t('appointments.loadingHospitals') : t('common.loading')}
+          </Text>
         </View>
       )}
       
       {/* Main content */}
-      {!isLoading && (
+      {!isLoading && !loadingHospitals && (
         <View style={styles.content}>
           {/* Map container */}
           <View style={styles.mapContainer}>
@@ -489,7 +592,7 @@ const AppointmentsScreen = ({ navigation }) => {
           <FlatList
             data={hospitalList}
             renderItem={renderHospitalItem}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id || item.hospital_id || Math.random().toString()}
             style={styles.hospitalList}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
@@ -501,7 +604,7 @@ const AppointmentsScreen = ({ navigation }) => {
               <View style={styles.selectedHospitalInfo}>
                 <Text style={styles.selectedHospitalName}>{selectedHospital.name}</Text>
                 <Text style={styles.selectedHospitalDistance}>
-                  {selectedHospital.distanceText} • {selectedHospital.specialties.slice(0, 2).join(', ')}
+                  {selectedHospital.distanceText} • {(selectedHospital.specialties || []).slice(0, 2).join(', ')}
                 </Text>
               </View>
               <View style={styles.actionButtons}>

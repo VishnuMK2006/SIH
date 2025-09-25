@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { API_ENDPOINTS, getHeaders } from '../config/api';
+import PatientService from '../services/PatientService';
 
 // Create the Authentication Context
 const AuthContext = createContext();
@@ -63,30 +64,59 @@ export const AuthProvider = ({ children }) => {
     loadTokenAndUserData();
   }, []);
 
-  // Login function
-  const login = async (email, password) => {
+  // Login function for patient authentication
+  const login = async (mobileNumber, aadhaarNumber) => {
     try {
       const response = await axios.post(
         API_ENDPOINTS.AUTH.LOGIN, 
-        { email, password },
+        { 
+          mobile_number: mobileNumber, 
+          aadhaar_number: aadhaarNumber 
+        },
         { headers: getHeaders() }
       );
 
-      const { token, user } = response.data;
+      const { token, patient } = response.data;
 
-      // Save token and user data to secure storage
+      // Fetch detailed patient information using the Aadhaar number
+      console.log('Fetching detailed patient information...');
+      const detailedPatientResult = await PatientService.getPatientDetails(aadhaarNumber, token);
+      
+      let finalPatientData = patient; // Fallback to basic patient data
+      
+      if (detailedPatientResult.success) {
+        // Use detailed patient data if available
+        finalPatientData = {
+          ...patient,
+          ...detailedPatientResult.data.patient,
+          // Preserve any additional data from login response
+          login_timestamp: new Date().toISOString()
+        };
+        console.log('Detailed patient information fetched successfully');
+      } else {
+        console.warn('Could not fetch detailed patient information:', detailedPatientResult.error);
+        // Continue with basic patient data from login response
+      }
+
+      // Save token and detailed patient data to secure storage
       await SecureStore.setItemAsync(TOKEN_KEY, token);
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
+      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(finalPatientData));
 
-      // Update auth state
+      // Update auth state with detailed patient data
       setAuthState({
         token,
-        user,
+        user: finalPatientData,
         isLoading: false,
         isSignout: false,
       });
 
-      return { success: true, data: response.data };
+      return { 
+        success: true, 
+        data: {
+          ...response.data,
+          patient: finalPatientData // Return the enhanced patient data
+        }
+      };
     } catch (error) {
       console.error('Login error:', error);
       
@@ -225,6 +255,51 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Refresh patient details using stored Aadhaar number
+  const refreshPatientDetails = async () => {
+    try {
+      if (!authState.user?.contact?.aadhaar_number && !authState.user?.aadhaar_number) {
+        throw new Error('No Aadhaar number available for refresh');
+      }
+
+      // Get Aadhaar number from stored user data
+      const aadhaarNumber = authState.user.contact?.aadhaar_number || 
+                           authState.user.aadhaar_number;
+
+      console.log('Refreshing patient details for Aadhaar:', aadhaarNumber);
+      
+      const detailedPatientResult = await PatientService.getPatientDetails(aadhaarNumber, authState.token);
+      
+      if (detailedPatientResult.success) {
+        const updatedPatientData = {
+          ...authState.user,
+          ...detailedPatientResult.data.patient,
+          last_refresh: new Date().toISOString()
+        };
+
+        // Update user data in secure storage
+        await SecureStore.setItemAsync(USER_KEY, JSON.stringify(updatedPatientData));
+
+        // Update auth state
+        setAuthState(prev => ({
+          ...prev,
+          user: updatedPatientData,
+        }));
+
+        return { success: true, data: updatedPatientData };
+      } else {
+        throw new Error(detailedPatientResult.error);
+      }
+    } catch (error) {
+      console.error('Refresh patient details error:', error);
+      
+      return { 
+        success: false, 
+        error: error.message || 'Failed to refresh patient details' 
+      };
+    }
+  };
+
   // Create the auth context value object
   const authContext = {
     ...authState,
@@ -233,6 +308,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     getUserProfile,
     updateUserProfile,
+    refreshPatientDetails, // Add the new function
   };
 
   return (

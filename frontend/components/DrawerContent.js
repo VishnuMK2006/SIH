@@ -19,6 +19,14 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
     navigation.navigate(screenName);
   };
   
+  // Handle hospital selection navigation with specific params
+  const handleHospitalSelection = () => {
+    closeDrawer();
+    navigation.navigate('HospitalSelection', {
+      title: t('hospitals.findHospitals')
+    });
+  };
+  
   // Handle logout
   const handleLogout = async () => {
     closeDrawer();
@@ -37,6 +45,11 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
       </View>
       
       <ScrollView style={styles.menuItems}>
+        {/* Main Navigation */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{t('menu.navigation')}</Text>
+        </View>
+        
         {/* Menu Items */}
         <TouchableOpacity 
           style={styles.menuItem}
@@ -44,6 +57,14 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
         >
           <Text style={styles.menuIcon}>📊</Text>
           <Text style={styles.menuText}>{t('menu.dashboard')}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={handleHospitalSelection}
+        >
+          <Text style={styles.menuIcon}>🏥</Text>
+          <Text style={styles.menuText}>{t('hospitals.findHospitals')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -66,7 +87,7 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           style={styles.menuItem}
           onPress={() => handleMenuItemPress('Records')}
         >
-          <Text style={styles.menuIcon}>📝</Text>
+          <Text style={styles.menuIcon}>�</Text>
           <Text style={styles.menuText}>{t('menu.history')}</Text>
         </TouchableOpacity>
         
@@ -74,9 +95,14 @@ const DrawerContent = ({ navigation, closeDrawer }) => {
           style={styles.menuItem}
           onPress={() => handleMenuItemPress('RulesAndRegulations')}
         >
-          <Text style={styles.menuIcon}>📋</Text>
+          <Text style={styles.menuIcon}>�</Text>
           <Text style={styles.menuText}>{t('menu.rulesRegulations')}</Text>
         </TouchableOpacity>
+        
+        {/* Settings Section */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{t('menu.settings')}</Text>
+        </View>
         
         <TouchableOpacity 
           style={styles.menuItem}
@@ -150,6 +176,18 @@ const styles = StyleSheet.create({
   menuItems: {
     flex: 1,
     paddingTop: 10,
+  },
+  sectionHeader: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    marginTop: 5,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   menuItem: {
     flexDirection: 'row',

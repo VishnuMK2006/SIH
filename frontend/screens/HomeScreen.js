@@ -11,7 +11,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation as useAppNavigation } from '../context/NavigationContext';
-import { patientInfo } from '../data/patientData';
 import AppBar from '../components/AppBar';
 import MainLayout from '../components/MainLayout';
 
@@ -20,6 +19,26 @@ const HomeScreen = ({ navigation }) => {
   const { openDrawer } = useAppNavigation();
   const { t } = useTranslation();
 
+  // Helper function to safely get patient data with fallbacks
+  const getPatientData = () => {
+    if (!user) return null;
+    
+    return {
+      name: user.name || user.patient_name || 'N/A',
+      patient_id: user.patient_id || 'N/A',
+      gender: user.gender || user.demographics?.gender || 'N/A',
+      age: user.age || user.demographics?.age || 'N/A',
+      district: user.district || user.location?.district || 'N/A',
+      country: user.country || user.location?.country || 'India',
+      email: user.email || user.contact?.email || 'N/A',
+      phone: user.phone_number || user.contact?.phone_number || 'N/A',
+      aadhaar: user.contact?.masked_aadhaar || user.aadhaar_number || 'N/A',
+      lastLogin: user.last_login || user.last_refresh || new Date().toISOString()
+    };
+  };
+
+  const patientData = getPatientData();
+
   const handleLogout = async () => {
     await logout();
   };
@@ -27,6 +46,26 @@ const HomeScreen = ({ navigation }) => {
   const goBackToDashboard = () => {
     navigation.goBack();
   };
+
+  // Show loading or error state if no user data
+  if (!user || !patientData) {
+    return (
+      <MainLayout navigation={navigation}>
+        <SafeAreaView style={styles.container}>
+          <AppBar 
+            title={t('profile.profile')}
+            showBackButton={true}
+            showMenuButton={true}
+            onBackPress={goBackToDashboard}
+            onMenuPress={openDrawer}
+          />
+          <View style={[styles.content, styles.centerContent]}>
+            <Text style={styles.errorText}>{t('common.loading')}</Text>
+          </View>
+        </SafeAreaView>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout navigation={navigation}>
@@ -41,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
         />
       
       <View style={styles.content}>
-        <Text style={styles.welcomeText}>{t('profile.welcome')}, {patientInfo.name}!</Text>
+        <Text style={styles.welcomeText}>{t('profile.welcome')}, {patientData.name}!</Text>
         
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.card}>
@@ -49,48 +88,53 @@ const HomeScreen = ({ navigation }) => {
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.patientId')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.patient_id}</Text>
+              <Text style={styles.profileValue}>{patientData.patient_id}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.name')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.name}</Text>
+              <Text style={styles.profileValue}>{patientData.name}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.gender')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.gender.charAt(0).toUpperCase() + patientInfo.gender.slice(1)}</Text>
+              <Text style={styles.profileValue}>{patientData.gender.charAt(0).toUpperCase() + patientData.gender.slice(1)}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.age')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.age}</Text>
+              <Text style={styles.profileValue}>{patientData.age}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.district')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.district}</Text>
+              <Text style={styles.profileValue}>{patientData.district}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.country')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.country}</Text>
+              <Text style={styles.profileValue}>{patientData.country}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.email')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.email}</Text>
+              <Text style={styles.profileValue}>{patientData.email}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.phone')}:</Text>
-              <Text style={styles.profileValue}>{patientInfo.phoneNumber}</Text>
+              <Text style={styles.profileValue}>{patientData.phone}</Text>
+            </View>
+
+            <View style={styles.profileItem}>
+              <Text style={styles.profileLabel}>{t('profile.aadhaar')}:</Text>
+              <Text style={styles.profileValue}>{patientData.aadhaar}</Text>
             </View>
             
             <View style={styles.profileItem}>
               <Text style={styles.profileLabel}>{t('profile.lastLogin')}:</Text>
               <Text style={styles.profileValue}>
-                {new Date(patientInfo.lastLogin).toLocaleString()}
+                {new Date(patientData.lastLogin).toLocaleString()}
               </Text>
             </View>
           </View>
@@ -196,6 +240,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 

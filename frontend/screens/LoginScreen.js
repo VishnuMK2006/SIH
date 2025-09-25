@@ -17,8 +17,8 @@ import AppBar from '../components/AppBar';
 
 const LoginScreen = ({ navigation }) => {
   const { t } = useTranslation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [aadhaarNumber, setAadhaarNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -28,10 +28,17 @@ const LoginScreen = ({ navigation }) => {
   const validateForm = () => {
     let tempErrors = {};
     
-    if (!email) tempErrors.email = t('auth.fillAllFields');
-    else if (!/\S+@\S+\.\S+/.test(email)) tempErrors.email = t('auth.invalidEmail');
+    if (!mobileNumber) {
+      tempErrors.mobileNumber = t('auth.fillAllFields');
+    } else if (!/^\d{10}$/.test(mobileNumber)) {
+      tempErrors.mobileNumber = t('auth.invalidMobileNumber');
+    }
     
-    if (!password) tempErrors.password = t('auth.fillAllFields');
+    if (!aadhaarNumber) {
+      tempErrors.aadhaarNumber = t('auth.fillAllFields');
+    } else if (!/^\d{12}$/.test(aadhaarNumber)) {
+      tempErrors.aadhaarNumber = t('auth.invalidAadhaarNumber');
+    }
     
     setErrors(tempErrors);
     
@@ -45,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      const result = await login(email, password);
+      const result = await login(mobileNumber, aadhaarNumber);
       
       if (!result.success) {
         Alert.alert(t('auth.loginError'), result.error);
@@ -70,34 +77,37 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.title}>{t('common.appName')}</Text>
           <Text style={styles.subtitle}>{t('auth.login')}</Text>
 
-          {/* Email Field */}
+          {/* Mobile Number Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>{t('auth.email')}</Text>
+            <Text style={styles.inputLabel}>{t('auth.mobileNumber')}</Text>
             <TextInput
               style={styles.input}
-              placeholder={t('auth.email')}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
+              placeholder={t('auth.enterMobileNumber')}
+              value={mobileNumber}
+              onChangeText={setMobileNumber}
+              keyboardType="numeric"
+              maxLength={10}
               autoCapitalize="none"
             />
-            {errors.email ? (
-              <Text style={styles.errorText}>{errors.email}</Text>
+            {errors.mobileNumber ? (
+              <Text style={styles.errorText}>{errors.mobileNumber}</Text>
             ) : null}
           </View>
 
-          {/* Password Field */}
+          {/* Aadhaar Number Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>{t('auth.password')}</Text>
+            <Text style={styles.inputLabel}>{t('auth.aadhaarNumber')}</Text>
             <TextInput
               style={styles.input}
-              placeholder={t('auth.password')}
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
+              placeholder={t('auth.enterAadhaarNumber')}
+              value={aadhaarNumber}
+              onChangeText={setAadhaarNumber}
+              keyboardType="numeric"
+              maxLength={12}
+              autoCapitalize="none"
             />
-            {errors.password ? (
-              <Text style={styles.errorText}>{errors.password}</Text>
+            {errors.aadhaarNumber ? (
+              <Text style={styles.errorText}>{errors.aadhaarNumber}</Text>
             ) : null}
           </View>
 

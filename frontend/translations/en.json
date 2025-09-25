@@ -41,10 +41,16 @@
     "hi": "Hindi"
   },
   "auth": {
-    "login": "Login",
+    "login": "Patient Login",
     "signUp": "Sign Up",
     "email": "Email",
     "password": "Password",
+    "mobileNumber": "Mobile Number",
+    "aadhaarNumber": "Aadhaar Number",
+    "enterMobileNumber": "Enter 10-digit mobile number",
+    "enterAadhaarNumber": "Enter 12-digit Aadhaar number",
+    "invalidMobileNumber": "Mobile number must be exactly 10 digits",
+    "invalidAadhaarNumber": "Aadhaar number must be exactly 12 digits",
     "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot Password?",
     "noAccount": "Don't have an account?",
@@ -95,6 +101,8 @@
     "welcome": "Welcome",
     "email": "Email",
     "phone": "Phone",
+    "aadhaar": "Aadhaar",
+    "refreshDetails": "Refresh Details",
     "lastLogin": "Last Login"
   },
   "dashboard": {
@@ -109,6 +117,7 @@
     "bloodType": "Blood Type",
     "weight": "Weight",
     "height": "Height",
+    "quickActions": "Quick Actions",
     "viewAll": "View All",
     "noAppointments": "No upcoming appointments",
     "noActivity": "No recent activity",
@@ -133,15 +142,22 @@
     "cancelled": "Cancelled"
   },
   "menu": {
+    "navigation": "Navigation",
     "home": "Home",
     "profile": "Profile",
     "dashboard": "Dashboard",
     "history": "History",
     "rulesRegulations": "Rules & Regulations",
     "settings": "Settings",
-    "help": "Help & Support",
-    "about": "About",
     "appointments": "Appointments"
+  },
+  "hospitals": {
+    "hospitals": "Hospitals",
+    "findHospitals": "Find Hospitals",
+    "nearbyHospitals": "Nearby Hospitals",
+    "selectHospital": "Select Hospital",
+    "hospitalDetails": "Hospital Details",
+    "noHospitalsFound": "No hospitals found"
   },
   "appointments": {
     "title": "Appointments",
@@ -152,6 +168,8 @@
     "locationError": "Could not get your location",
     "locationLoading": "Getting your location...",
     "locationPermissionRequired": "Location permission is required to show nearby hospitals",
+    "loadingHospitals": "Loading hospitals...",
+    "errorLoadingHospitals": "Failed to load hospitals from server",
     "book": "Book Appointment",
     "call": "Call",
     "bookAppointment": "Book Appointment",
@@ -164,6 +182,8 @@
     "time": "Preferred Time",
     "enterTime": "Enter preferred time (e.g., 10:00 AM)",
     "reason": "Reason for Visit",
+    "noPhoneAvailable": "Hospital phone number not available",
+    "usingDefaultNumber": "Using default number",
     "enterReason": "Briefly describe your medical concern",
     "fillAllFields": "Please fill all the fields",
     "requestSent": "Appointment Request Sent",
@@ -180,6 +200,7 @@
     }
   },
   "records": {
+    "records": "Records",
     "title": "Medical Records",
     "yourMedicalHistory": "Your Medical History",
     "noRecords": "No medical records found",
